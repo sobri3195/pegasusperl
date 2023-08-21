@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+
+# This script scans a directory and its subdirectories for files containing backdoor code.
+
+use strict;
+use warnings;
+
+my $dir = "/path/to/directory"; # Change this to the directory you want to scan
+
+opendir(DIR, $dir) or die "Can't open directory: $!\n";
+
+while (my $file = readdir(DIR)) {
+    next if ($file =~ /^\./); # Skip hidden files
+    next if (-d "$dir/$file"); # Skip directories
+
+    open(FILE, "$dir/$file") or next; # Skip files we can't open
+
+    while (my $line = <FILE>) {
+        if ($line =~ /backdoor/i) { # Change this to match the backdoor code you're looking for
+            print "Found backdoor in $dir/$file\n";
+            last;
+        }
+    }
+
+    close(FILE);
+}
+
+closedir(DIR);
